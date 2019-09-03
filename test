@@ -1,0 +1,63 @@
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5 import QtCore
+import sys
+
+
+class ExampleWindow(QMainWindow):
+    def __init__(self, windowsize):
+        super().__init__()
+        self.windowsize = windowsize
+        self.initUI()
+
+    def initUI(self):
+        self.setFixedSize(self.windowsize * 0.8)
+        self.setWindowFlags(Qt.CustomizeWindowHint | Qt.FramelessWindowHint)
+
+        pixmap1 = QPixmap('Maps/map_cranfield.png')
+        pixmap1 = pixmap1.scaledToHeight(self.windowsize.height() * 0.8)
+        self.image = QLabel()
+        self.image.setPixmap(pixmap1)
+
+        # above is already implemented
+        ###############################################################
+
+        widget = QWidget()
+        self.setCentralWidget(widget)
+        layout_box = QHBoxLayout(widget)                ################## create an empty widget and make it the bottom layout
+        # layout_box.setContentsMargins(0, 0, 0, 0)
+        layout_box.addWidget(self.image)                ################## add the map onto the layout as the first layer
+
+        pixmap2 = QPixmap('waypoint.png')
+        pixmap2_resized = pixmap2.scaled(pixmap2.width() * 0.06, pixmap2.height() * 0.06, QtCore.Qt.KeepAspectRatio)
+
+
+        self.image2 = QLabel(widget)                    ################## making waypoint a child label object of the widget which is the bottom layout
+        self.image2.setPixmap(pixmap2_resized)          ####### TODO: what does set_pixmap do exactly? what is a pixmap?
+        self.image2.setFixedSize(pixmap2_resized.size())
+
+        # p = self.geometry().bottomRight() - self.image2.geometry().bottomRight() - QPoint(100, 100)
+        p = self.geometry().topLeft() + QPoint(200, 100)  # location of the waypoint
+        self.image2.move(p)
+
+
+        pixmap3_resized = pixmap2_resized
+        self.image3 = QLabel(widget)
+        self.image3.setPixmap(pixmap3_resized)
+        self.image3.setFixedSize(pixmap3_resized.size())
+
+        # p = self.geometry().bottomRight() - self.image2.geometry().bottomRight() - QPoint(100, 100)
+        p = self.geometry().topLeft() + QPoint(210, 110)  # location of the waypoint
+        self.image3.move(p)
+
+
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    screensize = app.desktop().availableGeometry().size()
+
+    ex = ExampleWindow(screensize)
+    ex.show()
+
+sys.exit(app.exec_())
